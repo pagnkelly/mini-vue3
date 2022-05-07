@@ -1,6 +1,6 @@
 import { isObject } from "../shared/index";
 import { ShapeFlags } from "../shared/ShapeFlags";
-import { createComponentInstance, setupComponent } from "./components";
+import { createComponentInstance, setupComponent } from "./component";
 
 export function render(vnode, rootContainer) {
   patch(vnode, rootContainer)
