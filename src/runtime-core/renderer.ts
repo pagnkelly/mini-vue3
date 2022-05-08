@@ -1,6 +1,7 @@
 import { isObject } from "../shared/index";
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
+import { Fragment, Text } from "./vnode";
 
 export function render(vnode, rootContainer) {
   patch(vnode, rootContainer)
@@ -8,12 +9,24 @@ export function render(vnode, rootContainer) {
 
 function patch(vnode, contariner) {
   // TODO 
-  const { shapeFlag } = vnode
-  if (shapeFlag & ShapeFlags.ELEMENT) {
-    processElement(vnode, contariner)
-  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-    processComponent(vnode, contariner);
+  const { type, shapeFlag } = vnode
+
+  switch (type) {
+    case Fragment:
+      processFragment(vnode, contariner)
+      break;
+    case Text:
+      processText(vnode, contariner)
+      break;
+    default:
+      if (shapeFlag & ShapeFlags.ELEMENT) {
+        processElement(vnode, contariner)
+      } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+        processComponent(vnode, contariner);
+      }
+      break;
   }
+
 }
 
 function processElement(vnode, contariner) {
@@ -27,7 +40,7 @@ function mountElement(vnode: any, contariner: any) {
   if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.textContent = children
   } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
-    mountChildren(children, el)
+    mountChildren(vnode, el)
   }
 
   for (const key in props) {
@@ -45,8 +58,8 @@ function mountElement(vnode: any, contariner: any) {
   contariner.append(el)
 }
 
-function mountChildren(children, container) {
-  children.forEach(v => {
+function mountChildren(vnode, container) {
+  vnode.children.forEach(v => {
     patch(v, container)
   })
 }
@@ -69,4 +82,14 @@ function setupRenderEffect(instance, initialVNode, container) {
   initialVNode.el = subTree.el
 }
 
+
+function processFragment(vnode: any, contariner: any) {
+  mountChildren(vnode, contariner)
+}
+
+function processText(vnode: any, contariner: any) {
+  const { children } = vnode
+  const textNode = (vnode.el = document.createTextNode(children))
+  contariner.append(textNode)
+}
 
