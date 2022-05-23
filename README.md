@@ -10,10 +10,11 @@ vue3的mini仓库，用于学习理解vue3
 
 ```sh
 # npm test
+# yarn test
 # 全部文件
-yarn test
+pnpm test
 # 个别文件
-yarn test [相应文件]
+pnpm test [相应文件]
 
 ```
 
@@ -52,3 +53,18 @@ yarn test [相应文件]
 ```
 
 可以按照 `reactivity` => `runtime-core` => `runtime-dom` => `compiler-core`的顺序去看
+
+## 个人理解
+
+### reactivity
+
+无非那么几个api
+
+|api|一句话|
+|---|---
+|reactive| 基于proxy, get收集依赖，set触发依赖
+|ref| 针对value的get/set做收集触发依赖，如果对象是个对象，其实是个reactive
+|effect|这个就是依赖，收集触发都和他相关，和响应式对象绑定
+|computed | 基于effect,配合value的get操作，对值缓存
+|readonly| 基于proxy, 只读，不能set
+| shallowReadonly | 浅层readonly
