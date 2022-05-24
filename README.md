@@ -63,8 +63,41 @@ pnpm test [相应文件]
 |api|一句话|
 |---|---
 |reactive| 基于proxy, get收集依赖，set触发依赖
-|ref| 针对value的get/set做收集触发依赖，如果对象是个对象，其实是个reactive
-|effect|这个就是依赖，收集触发都和他相关，和响应式对象绑定
+|ref| 针对value的get/set做收集触发依赖，如果value是个对象，其实是个reactive
+|effect|依赖收集触发都和他相关，和响应式对象绑定
 |computed | 基于effect,配合value的get操作，对值缓存
 |readonly| 基于proxy, 只读，不能set
-| shallowReadonly | 浅层readonly
+|shallowReadonly | 浅层readonly
+
+### runtime-core
+
+### runtime-dom
+
+操作真实dom的操作都在这个模块
+
+```js
+// 创建元素
+createElement,
+// 设置属性
+patchProps,
+// 插入节点
+insert,
+// 删除节点
+remove,
+// 设置文本元素
+setElementText
+```
+
+### compiler-dom
+目标：实现template TO code
+方式：把`ast` `transform` 成容易 生成代码的样子
+```js
+
+// <div>hi,{{message}}</div>
+
+
+exports[`codegen element 1`] = `
+"const { toDisplayString:_toDisplayString, createElementVNode:_createElementVNode } = Vue
+return function render(_ctx, _cache){return _createElementVNode('div', null, 'hi,' + _toDisplayString(_ctx.message))}"
+`;
+```
